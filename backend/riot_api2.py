@@ -70,8 +70,28 @@ def get_match_ids(puuid, count =20):
 
     return response.json()
 
+#試合詳細情報取得
+def get_match_detail(match_id):
+    match_detail_url = (
+        f"https://asia.api.riotgames.com"
+        f"/lol/match/v5/matches/{match_id}"
+    )
+
+    response = requests.get(
+    match_detail_url,
+    headers=headers
+)
+    print("Match Detail Status Code:", response.status_code)
+
+    return response.json()
 #テスト
 puuid = get_puuid("Nusumaru06", "Ace06")
-match_ids = get_match_ids(puuid)
-print(puuid)
-print(match_ids)
+
+if puuid is not None:
+    match_ids = get_match_ids(puuid)
+
+    latest_match_ids = match_ids[0]
+
+    match_data = get_match_detail(latest_match_ids)
+
+    print(match_data)
