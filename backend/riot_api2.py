@@ -84,6 +84,41 @@ def get_match_detail(match_id):
     print("Match Detail Status Code:", response.status_code)
 
     return response.json()
+
+# 1試合のデータから指定プレイヤーの成績を取り出す
+def get_player_data(match_data, puuid):
+
+    participants = match_data["info"]["participants"]
+
+    for participant in participants:
+        if participant["puuid"] == puuid:
+            return {
+                #試合基本情報
+                "match_id": match_data["matadata"]["matchID"],
+                "summoner_name": (
+                    participant["riotIdGameName"]
+                    + "#"
+                    +participant["riotIdTagline"]
+                ),
+                "champion": participant["championName"],
+                "lane": participant["lane"],
+                "win": "win" if participant["win"] else "lose",
+                "Match duration": match_data["info"]["gameDuration"],
+                #スタッツ
+                "kills": participant["kills"],
+                "deaths": participant["deaths"],
+                "assists": participant["assists"],
+                "Kda": participant["challenges"].get("kda",None),
+                "Kill participation rate": participant["challenge"].get("killParticipation", None),
+                #ダメージとゴールド
+                "total damage to champions": participant["totalDamageDealtToChampions"],
+                "total gold acquired": participant["goldEarned"],
+                "damage per minute": participant["challenges"].get("damagePerMinute", None),
+                "gold per minute": participant["challenges"].get("goldPerMinute", None),
+            }
+
+    return None
+
 #テスト
 puuid = get_puuid("Nusumaru06", "Ace06")
 
